@@ -1,0 +1,14 @@
+{
+  "name": "tamashii",
+  "module": "server.ts",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "type": "module",
+  "dependencies": {
+    "elysia": "^1.2.10"
+  }
+}

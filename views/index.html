@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Character List</title>
+</head>
+
+<body>
+  <h1>Character List</h1>
+  <table id="charactersTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Player</th>
+        <th>Character</th>
+        <th>Occupation</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be populated by JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    async function loadCharacters() {
+      const response = await fetch('/characters');
+      const characters = await response.json();
+
+      const tbody = document.querySelector('#charactersTable tbody');
+      tbody.innerHTML = characters.map(char => `
+                <tr>
+                    <td>${char.id}</td>
+                    <td>${char.playerName}</td>
+                    <td>${char.characterName}</td>
+                    <td>${char.occupation}</td>
+                    <td><a href="/character/${char.id}">View</a></td>
+                </tr>
+            `).join('');
+    }
+
+    loadCharacters();
+  </script>
+</body>
+
+</html>

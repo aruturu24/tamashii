@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Add Character</title>
+</head>
+
+<body>
+  <h1>Create New Character</h1>
+  <form id="characterForm">
+    <!-- Basic Info -->
+    <label>Player Name: <input type="text" name="playerName" required></label><br>
+    <label>Character Name: <input type="text" name="characterName" required></label><br>
+    <label>Occupation: <input type="text" name="occupation" required></label><br>
+    <!-- ... Add all other fields following the same pattern ... -->
+
+    <button type="submit">Create Character</button>
+  </form>
+
+  <script>
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateCharacteristics() {
+      return {
+        STR: getRandomInt(40, 90),
+        CON: getRandomInt(40, 90),
+        SIZ: getRandomInt(40, 90),
+        DEX: getRandomInt(40, 90),
+        APP: getRandomInt(40, 90),
+        INT: getRandomInt(40, 90),
+        POW: getRandomInt(40, 90),
+        EDU: getRandomInt(40, 90)
+      };
+    }
+
+    function generateSkills() {
+      const skills = {
+        "Accounting": getRandomInt(5, 70),
+        "Anthropology": getRandomInt(1, 50),
+        "Appraise": getRandomInt(5, 50),
+        "Archaeology": getRandomInt(1, 50),
+        // Add more skills as needed
+      };
+      return skills;
+    }
+
+    function generateCharacter() {
+      return {
+        playerName: document.querySelector('input[name="playerName"]').value,
+        characterName: document.querySelector('input[name="characterName"]').value,
+        occupation: document.querySelector('input[name="occupation"]').value,
+        age: getRandomInt(20, 60),
+        sex: ['Male', 'Female'][Math.floor(Math.random() * 2)],
+        residence: 'Arkham, MA',
+        birthplace: 'Boston, MA',
+        characteristics: generateCharacteristics(),
+        skills: generateSkills(),
+        hitPoints: [0, 0], // Will be calculated
+        sanity: [0, 0],
+        luck: getRandomInt(40, 90),
+        magicPoints: [0, 0], // Will be calculated
+        backstory: 'Generated character',
+        inventory: ['notebook', 'pen', 'flashlight'],
+        creditLevel: getRandomInt(10, 50),
+        money: getRandomInt(50, 500)
+      };
+    }
+
+    document.getElementById('characterForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Generate character with random values
+      const character = generateCharacter();
+
+      // Calculate derived values
+      const { STR, CON, SIZ } = character.characteristics;
+      character.hitPoints = [Math.floor((CON + SIZ) / 10), Math.floor((CON + SIZ) / 10)];
+      character.magicPoints = [Math.floor(character.characteristics.POW / 5), Math.floor(character.characteristics.POW / 5)];
+      character.sanity = [character.characteristics.POW, character.characteristics.POW];
+
+      try {
+        const response = await fetch('/characters', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(character)
+        });
+        const result = await response.json();
+        alert(`Character created with ID: ${result.id}`);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Character Details</title>
+</head>
+
+<body>
+  <h1>Character Details</h1>
+  <div id="characterDetails">
+    <!-- Details will be populated by JavaScript -->
+  </div>
+  <a href="/list-characters.html">Back to List</a>
+
+  <script>
+    async function loadCharacter() {
+      // Get the character ID from the URL path
+      const pathSegments = window.location.pathname.split('/');
+      const characterId = pathSegments[pathSegments.length - 1];
+
+      if (!characterId) {
+        document.getElementById('characterDetails').innerHTML = '<p>Character not found</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/characters/${characterId}`);
+        const character = await response.json();
+
+        console.log(character);
+
+        document.getElementById('characterDetails').innerHTML = `
+            <h2>${character.characterName}</h2>
+            <p><strong>Player:</strong> ${character.playerName}</p>
+            <p><strong>Occupation:</strong> ${character.occupation}</p>
+            <p><strong>Age:</strong> ${character.age}</p>
+            <p><strong>Sex:</strong> ${character.sex}</p>
+            <p><strong>Residence:</strong> ${character.residence}</p>
+            <p><strong>Birthplace:</strong> ${character.birthplace}</p>
+            
+            <h3>Characteristics</h3>
+            <ul>
+                <li><strong>STR:</strong> ${character.characteristics.STR}</li>
+                <li><strong>CON:</strong> ${character.characteristics.CON}</li>
+                <li><strong>SIZ:</strong> ${character.characteristics.SIZ}</li>
+                <li><strong>DEX:</strong> ${character.characteristics.DEX}</li>
+                <li><strong>APP:</strong> ${character.characteristics.APP}</li>
+                <li><strong>INT:</strong> ${character.characteristics.INT}</li>
+                <li><strong>POW:</strong> ${character.characteristics.POW}</li>
+                <li><strong>EDU:</strong> ${character.characteristics.EDU}</li>
+            </ul>
+            
+            <h3>Skills</h3>
+            <ul>
+                ${Object.entries(character.skills).map(([skill, value]) => `
+                    <li><strong>${skill}:</strong> ${value}</li>
+                `).join('')}
+            </ul>
+            
+            <h3>Status</h3>
+            <p><strong>Hit Points:</strong> ${character.hitPoints[0]}/${character.hitPoints[1]}</p>
+            <p><strong>Sanity:</strong> ${character.sanity[0]}/${character.sanity[1]}</p>
+            <p><strong>Luck:</strong> ${character.luck}</p>
+            <p><strong>Magic Points:</strong> ${character.magicPoints[0]}/${character.magicPoints[1]}</p>
+            
+            <h3>Inventory</h3>
+            <ul>
+                ${character.inventory.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+            
+            <h3>Financials</h3>
+            <p><strong>Credit Level:</strong> ${character.creditLevel}</p>
+            <p><strong>Money:</strong> $${character.money}</p>
+            
+            <h3>Backstory</h3>
+            <p>${character.backstory}</p>
+        `;
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('characterDetails').innerHTML = '<p>Error loading character</p>';
+      }
+    }
+
+    loadCharacter();
+  </script>
+</body>
+
+</html>
