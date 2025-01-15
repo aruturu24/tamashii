@@ -3,6 +3,7 @@
 
 <head>
   <title>Add Character</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html {
       background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAFklEQVQYV2NkYGD4z8DAwMgABXAGNgCxHwWZ4gXbAAAAAElFTkSuQmCC');
@@ -98,19 +99,277 @@
     input[type="text"] {
       border-left: 3px solid #c62828;
     }
+
+    /* Style for number input */
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-left: 3px solid #c62828;
+      background: #f8f8f8;
+      font-family: 'Courier New', monospace;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #c62828;
+      background: #fff;
+    }
+
+    /* Style for select dropdown */
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-left: 3px solid #c62828;
+      background: #f8f8f8;
+      font-family: 'Courier New', monospace;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c62828'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 12px;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #c62828;
+      background-color: #fff;
+    }
+
+    /* Style for buttons */
+    button {
+      margin-top: 15px;
+      padding: 12px;
+      background: #222;
+      color: white;
+      border: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-left: 3px solid #c62828;
+    }
+
+    button:hover {
+      background: #444;
+    }
+
+    /* Add spacing between buttons */
+    #randomize {
+      margin-top: 10px;
+      background: #c62828;
+    }
+
+    #randomize:hover {
+      background: #e53935;
+    }
+
+    /* Add criminal file aesthetic to form */
+    #characterForm {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #characterForm::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(0deg,
+          transparent,
+          transparent 19px,
+          rgba(0, 0, 0, 0.1) 20px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Add collapsible section styling */
+    .collapsible {
+      background-color: #222;
+      color: white;
+      cursor: pointer;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 1.1em;
+      margin-top: 15px;
+      border-left: 3px solid #c62828;
+    }
+
+    .collapsible:after {
+      content: '\002B';
+      color: white;
+      font-weight: bold;
+      float: right;
+      margin-left: 5px;
+    }
+
+    .active:after {
+      content: "\2212";
+    }
+
+    .content {
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Make labels and inputs more compact */
+    label {
+      margin: 8px 0;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      padding: 6px;
+      margin-top: 3px;
+    }
+
+    /* Reduce vertical spacing */
+    br {
+      display: none;
+    }
+
+    /* Add this to your existing styles */
+    .two-column-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .two-column-grid label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 5px 0;
+    }
   </style>
 </head>
 
 <body>
   <h1>Create New Character</h1>
   <form id="characterForm">
-    <!-- Basic Info -->
-    <label>Player Name: <input type="text" name="playerName" required></label><br>
-    <label>Character Name: <input type="text" name="characterName" required></label><br>
-    <label>Occupation: <input type="text" name="occupation" required></label><br>
-    <!-- ... Add all other fields following the same pattern ... -->
+    <!-- Basic Info Section -->
+    <button type="button" class="collapsible">Basic Information</button>
+    <div id="basicInfoContent" class="content">
+      <label>Player Name: <input type="text" name="playerName"></label>
+      <label>Character Name: <input type="text" name="characterName"></label>
+      <label>Occupation: <input type="text" name="occupation"></label>
+      <label>Age: <input type="number" name="age"></label>
+      <label>Sex:
+        <select name="sex">
+          <option value="">Random</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </label>
+      <label>Residence: <input type="text" name="residence"></label>
+      <label>Birthplace: <input type="text" name="birthplace"></label>
+    </div>
+
+    <!-- Characteristics Section -->
+    <button type="button" class="collapsible">Characteristics</button>
+    <div id="characteristicsContent" class="content">
+      <div class="two-column-grid">
+        <label>STR: <input type="number" name="STR" min="0" max="99"></label>
+        <label>CON: <input type="number" name="CON" min="0" max="99"></label>
+        <label>SIZ: <input type="number" name="SIZ" min="0" max="99"></label>
+        <label>DEX: <input type="number" name="DEX" min="0" max="99"></label>
+        <label>APP: <input type="number" name="APP" min="0" max="99"></label>
+        <label>INT: <input type="number" name="INT" min="0" max="99"></label>
+        <label>POW: <input type="number" name="POW" min="0" max="99"></label>
+        <label>EDU: <input type="number" name="EDU" min="0" max="99"></label>
+      </div>
+    </div>
+
+    <!-- Skills Section -->
+    <button type="button" class="collapsible">Skills</button>
+    <div id="skillsContent" class="content">
+      <div class="two-column-grid">
+        <label>Accounting: <input type="number" name="Accounting" min="0" max="99" value="5"></label>
+        <label>Anthropology: <input type="number" name="Anthropology" min="0" max="99" value="1"></label>
+        <label>Appraise: <input type="number" name="Appraise" min="0" max="99" value="5"></label>
+        <label>Archaeology: <input type="number" name="Archaeology" min="0" max="99" value="1"></label>
+        <label>Art/Craft: <input type="number" name="Art/Craft" min="0" max="99" value="5"></label>
+        <label>Charm: <input type="number" name="Charm" min="0" max="99" value="15"></label>
+        <label>Climb: <input type="number" name="Climb" min="0" max="99" value="20"></label>
+        <label>Computer Use: <input type="number" name="Computer Use" min="0" max="99" value="5"></label>
+        <label>Credit Rating: <input type="number" name="Credit Rating" min="0" max="99" value="0"></label>
+        <label>Cthulhu Mythos: <input type="number" name="Cthulhu Mythos" min="0" max="99" value="0"></label>
+        <label>Disguise: <input type="number" name="Disguise" min="0" max="99" value="5"></label>
+        <label>Dodge: <input type="number" name="Dodge" min="0" max="99" disabled></label>
+        <label>Drive Auto: <input type="number" name="Drive Auto" min="0" max="99" value="20"></label>
+        <label>Elec Repair: <input type="number" name="Elec Repair" min="0" max="99" value="10"></label>
+        <label>Electronics: <input type="number" name="Electronics" min="0" max="99" value="1"></label>
+        <label>Fast Talk: <input type="number" name="Fast Talk" min="0" max="99" value="5"></label>
+        <label>Fighting (Brawl): <input type="number" name="Fighting (Brawl)" min="0" max="99" value="25"></label>
+        <label>Firearms (Handgun): <input type="number" name="Firearms (Handgun)" min="0" max="99" value="20"></label>
+        <label>Firearms (Rifle/Shotgun): <input type="number" name="Firearms (Rifle/Shotgun)" min="0" max="99"
+            value="25"></label>
+        <label>First Aid: <input type="number" name="First Aid" min="0" max="99" value="30"></label>
+        <label>History: <input type="number" name="History" min="0" max="99" value="5"></label>
+        <label>Intimidate: <input type="number" name="Intimidate" min="0" max="99" value="15"></label>
+        <label>Jump: <input type="number" name="Jump" min="0" max="99" value="20"></label>
+        <label>Language (Other): <input type="number" name="Language (Other)" min="0" max="99" value="1"
+            disabled></label>
+        <label>Language (Own): <input type="number" name="Language (Own)" min="0" max="99" disabled></label>
+        <label>Law: <input type="number" name="Law" min="0" max="99" value="5"></label>
+        <label>Library Use: <input type="number" name="Library Use" min="0" max="99" value="20"></label>
+        <label>Listen: <input type="number" name="Listen" min="0" max="99" value="25"></label>
+        <label>Locksmith: <input type="number" name="Locksmith" min="0" max="99" value="1"></label>
+        <label>Mech Repair: <input type="number" name="Mech Repair" min="0" max="99" value="10"></label>
+        <label>Medicine: <input type="number" name="Medicine" min="0" max="99" value="1"></label>
+        <label>Natural World: <input type="number" name="Natural World" min="0" max="99" value="10"></label>
+        <label>Navigate: <input type="number" name="Navigate" min="0" max="99" value="10"></label>
+        <label>Occult: <input type="number" name="Occult" min="0" max="99" value="5"></label>
+        <label>Op Hv Machine: <input type="number" name="Op Hv Machine" min="0" max="99" value="1"></label>
+        <label>Persuade: <input type="number" name="Persuade" min="0" max="99" value="10"></label>
+        <label>Pilot: <input type="number" name="Pilot" min="0" max="99" value="1"></label>
+        <label>Psychology: <input type="number" name="Psychology" min="0" max="99" value="10"></label>
+        <label>Psychoanalysis: <input type="number" name="Psychoanalysis" min="0" max="99" value="1"></label>
+        <label>Science: <input type="number" name="Science" min="0" max="99" value="1"></label>
+        <label>Sleight of Hand: <input type="number" name="Sleight of Hand" min="0" max="99" value="10"></label>
+        <label>Spot Hidden: <input type="number" name="Spot Hidden" min="0" max="99" value="25"></label>
+        <label>Stealth: <input type="number" name="Stealth" min="0" max="99" value="20"></label>
+        <label>Survival: <input type="number" name="Survival" min="0" max="99" value="10"></label>
+        <label>Swim: <input type="number" name="Swim" min="0" max="99" value="20"></label>
+        <label>Throw: <input type="number" name="Throw" min="0" max="99" value="20"></label>
+        <label>Track: <input type="number" name="Track" min="0" max="99" value="10"></label>
+      </div>
+    </div>
+
+    <!-- Add this after the Skills section collapsible -->
+    <button type="button" id="addSkillButton" style="margin-top: 10px;">+ Add New Skill</button>
+
+    <!-- Add this modal at the bottom of the form, before the submit buttons -->
+    <div id="addSkillModal"
+      style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+      <h3>Add New Skill</h3>
+      <label>Skill Name: <input type="text" id="newSkillName"></label>
+      <label>Base Value: <input type="number" id="newSkillValue" min="0" max="99" value="0"></label>
+      <button type="button" id="saveSkillButton">Save Skill</button>
+      <button type="button" id="closeSkillModal">Close</button>
+    </div>
+    <div id="modalOverlay"
+      style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;">
+    </div>
 
     <button type="submit">Create Character</button>
+    <button type="button" id="randomize">Generate Random Character</button>
   </form>
 
   <script>
@@ -119,50 +378,116 @@
     }
 
     function generateCharacteristics() {
+      const form = document.getElementById('characterForm');
       return {
-        STR: getRandomInt(40, 90),
-        CON: getRandomInt(40, 90),
-        SIZ: getRandomInt(40, 90),
-        DEX: getRandomInt(40, 90),
-        APP: getRandomInt(40, 90),
-        INT: getRandomInt(40, 90),
-        POW: getRandomInt(40, 90),
-        EDU: getRandomInt(40, 90)
+        STR: Number(form.STR.value) || getRandomInt(40, 90),
+        CON: Number(form.CON.value) || getRandomInt(40, 90),
+        SIZ: Number(form.SIZ.value) || getRandomInt(40, 90),
+        DEX: Number(form.DEX.value) || getRandomInt(40, 90),
+        APP: Number(form.APP.value) || getRandomInt(40, 90),
+        INT: Number(form.INT.value) || getRandomInt(40, 90),
+        POW: Number(form.POW.value) || getRandomInt(40, 90),
+        EDU: Number(form.EDU.value) || getRandomInt(40, 90)
       };
     }
 
     function generateSkills() {
+      const form = document.getElementById('characterForm');
       const skills = {
-        "Accounting": getRandomInt(5, 70),
-        "Anthropology": getRandomInt(1, 50),
-        "Appraise": getRandomInt(5, 50),
-        "Archaeology": getRandomInt(1, 50),
-        // Add more skills as needed
+        "Accounting": Number(form.Accounting.value) || 5,
+        "Anthropology": Number(form.Anthropology.value) || 1,
+        "Appraise": Number(form.Appraise.value) || 5,
+        "Archaeology": Number(form.Archaeology.value) || 1,
+        "Art/Craft": Number(form["Art/Craft"].value) || 5,
+        "Charm": Number(form.Charm.value) || 15,
+        "Climb": Number(form.Climb.value) || 20,
+        "Computer Use": Number(form["Computer Use"].value) || 5,
+        "Credit Rating": Number(form["Credit Rating"].value) || 0,
+        "Cthulhu Mythos": Number(form["Cthulhu Mythos"].value) || 0,
+        "Disguise": Number(form.Disguise.value) || 5,
+        "Drive Auto": Number(form["Drive Auto"].value) || 20,
+        "Elec Repair": Number(form["Elec Repair"].value) || 10,
+        "Electronics": Number(form.Electronics.value) || 1,
+        "Fast Talk": Number(form["Fast Talk"].value) || 5,
+        "Fighting (Brawl)": Number(form["Fighting (Brawl)"].value) || 25,
+        "Firearms (Handgun)": Number(form["Firearms (Handgun)"].value) || 20,
+        "Firearms (Rifle/Shotgun)": Number(form["Firearms (Rifle/Shotgun)"].value) || 25,
+        "First Aid": Number(form["First Aid"].value) || 30,
+        "History": Number(form.History.value) || 5,
+        "Intimidate": Number(form.Intimidate.value) || 15,
+        "Jump": Number(form.Jump.value) || 20,
+        "Language (Other)": 1,
+        "Law": Number(form.Law.value) || 5,
+        "Library Use": Number(form["Library Use"].value) || 20,
+        "Listen": Number(form.Listen.value) || 25,
+        "Locksmith": Number(form.Locksmith.value) || 1,
+        "Mech Repair": Number(form["Mech Repair"].value) || 10,
+        "Medicine": Number(form.Medicine.value) || 1,
+        "Natural World": Number(form["Natural World"].value) || 10,
+        "Navigate": Number(form.Navigate.value) || 10,
+        "Occult": Number(form.Occult.value) || 5,
+        "Op Hv Machine": Number(form["Op Hv Machine"].value) || 1,
+        "Persuade": Number(form.Persuade.value) || 10,
+        "Pilot": Number(form.Pilot.value) || 1,
+        "Psychology": Number(form.Psychology.value) || 10,
+        "Psychoanalysis": Number(form.Psychoanalysis.value) || 1,
+        "Science": Number(form.Science.value) || 1,
+        "Sleight of Hand": Number(form["Sleight of Hand"].value) || 10,
+        "Spot Hidden": Number(form["Spot Hidden"].value) || 25,
+        "Stealth": Number(form.Stealth.value) || 20,
+        "Survival": Number(form.Survival.value) || 10,
+        "Swim": Number(form.Swim.value) || 20,
+        "Throw": Number(form.Throw.value) || 20,
+        "Track": Number(form.Track.value) || 10
       };
+
+      // Add custom skills
+      const customSkills = document.getElementById('skillsContent').querySelectorAll('.two-column-grid label');
+      customSkills.forEach(label => {
+        const input = label.querySelector('input');
+        // Only add if it's not in the original skills list and not disabled
+        if (!skills.hasOwnProperty(input.name) && !input.disabled) {
+          skills[input.name] = Number(input.value) || 0;
+        }
+      });
+
       return skills;
     }
 
     function generateCharacter() {
+      const form = document.getElementById('characterForm');
       return {
-        playerName: document.querySelector('input[name="playerName"]').value,
-        characterName: document.querySelector('input[name="characterName"]').value,
-        occupation: document.querySelector('input[name="occupation"]').value,
-        age: getRandomInt(20, 60),
-        sex: ['Male', 'Female'][Math.floor(Math.random() * 2)],
-        residence: 'Arkham, MA',
-        birthplace: 'Boston, MA',
+        playerName: form.playerName.value || `Player ${getRandomInt(1, 100)}`,
+        characterName: form.characterName.value || `Character ${getRandomInt(1, 100)}`,
+        occupation: form.occupation.value || ['Private Investigator', 'Doctor', 'Professor', 'Journalist'][Math.floor(Math.random() * 4)],
+        age: Number(form.age.value) || getRandomInt(20, 60),
+        sex: form.sex.value || ['Male', 'Female'][Math.floor(Math.random() * 2)],
+        residence: form.residence.value || 'Arkham, MA',
+        birthplace: form.birthplace.value || 'Boston, MA',
         characteristics: generateCharacteristics(),
         skills: generateSkills(),
-        hitPoints: [0, 0], // Will be calculated
+        hitPoints: [0, 0],
         sanity: [0, 0],
         luck: getRandomInt(40, 90),
-        magicPoints: [0, 0], // Will be calculated
+        magicPoints: [0, 0],
         backstory: 'Generated character',
         inventory: ['notebook', 'pen', 'flashlight'],
-        creditLevel: getRandomInt(10, 50),
         money: getRandomInt(50, 500)
       };
     }
+
+    // Add event listener for randomize button
+    document.getElementById('randomize').addEventListener('click', () => {
+      const character = generateCharacter();
+      document.getElementById('characterForm').reset();
+      document.querySelector('input[name="playerName"]').value = character.playerName;
+      document.querySelector('input[name="characterName"]').value = character.characterName;
+      document.querySelector('input[name="occupation"]').value = character.occupation;
+      document.querySelector('input[name="age"]').value = character.age;
+      document.querySelector('select[name="sex"]').value = character.sex;
+      document.querySelector('input[name="residence"]').value = character.residence;
+      document.querySelector('input[name="birthplace"]').value = character.birthplace;
+    });
 
     document.getElementById('characterForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -186,6 +511,97 @@
         alert(`Character created with ID: ${result.id}`);
       } catch (error) {
         console.error('Error:', error);
+      }
+    });
+
+    // Add collapsible functionality
+    const coll = document.getElementsByClassName("collapsible");
+    for (let i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        const content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      });
+    }
+
+    // Add this after the collapsible functionality code
+    const dexInput = document.querySelector('input[name="DEX"]');
+    const dodgeInput = document.querySelector('input[name="Dodge"]');
+    const eduInput = document.querySelector('input[name="EDU"]');
+    const languageOwnInput = document.querySelector('input[name="Language (Own)"]');
+
+    // Disable the inputs initially
+    dodgeInput.disabled = true;
+    languageOwnInput.disabled = true;
+
+    // Update Dodge and Language (Own) when DEX or EDU changes
+    dexInput.addEventListener('input', () => {
+      dodgeInput.value = Math.floor(dexInput.value / 2);
+    });
+
+    eduInput.addEventListener('input', () => {
+      languageOwnInput.value = eduInput.value;
+    });
+
+    // Also update these values when randomizing
+    document.getElementById('randomize').addEventListener('click', () => {
+      // ... existing randomize code ...
+
+      // Add these lines to update the derived values
+      const dexValue = document.querySelector('input[name="DEX"]').value;
+      const eduValue = document.querySelector('input[name="EDU"]').value;
+      dodgeInput.value = Math.floor(dexValue / 2);
+      languageOwnInput.value = eduValue;
+    });
+
+    // Add this after the existing script code
+    const addSkillButton = document.getElementById('addSkillButton');
+    const addSkillModal = document.getElementById('addSkillModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const saveSkillButton = document.getElementById('saveSkillButton');
+    const closeSkillModal = document.getElementById('closeSkillModal');
+
+    // Show modal
+    addSkillButton.addEventListener('click', () => {
+      addSkillModal.style.display = 'block';
+      modalOverlay.style.display = 'block';
+    });
+
+    // Close modal
+    closeSkillModal.addEventListener('click', () => {
+      addSkillModal.style.display = 'none';
+      modalOverlay.style.display = 'none';
+    });
+
+    // Save new skill
+    saveSkillButton.addEventListener('click', () => {
+      const skillName = document.getElementById('newSkillName').value.trim();
+      const skillValue = document.getElementById('newSkillValue').value;
+
+      if (skillName) {
+        // Add to form
+        const skillsGrid = document.getElementById('skillsContent').querySelector('.two-column-grid');
+        const newLabel = document.createElement('label');
+        newLabel.innerHTML = `${skillName}: <input type="number" name="${skillName}" min="0" max="99" value="${skillValue}">`;
+        skillsGrid.appendChild(newLabel);
+
+        // Update the collapsible content height
+        const skillsContent = document.getElementById('skillsContent');
+        if (skillsContent.style.maxHeight) {
+          skillsContent.style.maxHeight = skillsContent.scrollHeight + "px";
+        }
+
+        // Clear and close
+        document.getElementById('newSkillName').value = '';
+        document.getElementById('newSkillValue').value = 0;
+        addSkillModal.style.display = 'none';
+        modalOverlay.style.display = 'none';
+      } else {
+        alert('Please enter a skill name');
       }
     });
   </script>

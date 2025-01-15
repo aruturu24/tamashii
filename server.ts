@@ -23,8 +23,21 @@ db.exec(`
         magicPoints INTEGER,
         backstory TEXT,
         inventory TEXT,         -- JSON string
-        creditLevel INTEGER,
         money INTEGER
+    );
+`);
+
+// Add this after the characters table creation
+db.exec(`
+    CREATE TABLE IF NOT EXISTS dice_rolls (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        character_id INTEGER,
+        roll_type TEXT,          -- e.g., "skill", "luck", "damage"
+        roll_value INTEGER,      -- The actual rolled number
+        target_value INTEGER,    -- The target number (if applicable)
+        success BOOLEAN,         -- Whether the roll was successful
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(character_id) REFERENCES characters(id)
     );
 `);
 
@@ -55,8 +68,16 @@ interface Character {
   magicPoints: [number, number];// [current, max]
   backstory: string;
   inventory: string[];
-  creditLevel: number;
   money: number;
+}
+
+// Add this interface near the Character interface
+interface DiceRoll {
+  character_id?: number;
+  roll_type: string;
+  roll_value: number;
+  target_value?: number;
+  success?: boolean;
 }
 
 const characterSchema = t.Object({
@@ -84,9 +105,16 @@ const characterSchema = t.Object({
   magicPoints: t.Tuple([t.Number(), t.Number()]),
   backstory: t.String(),
   inventory: t.Array(t.String()),
-  creditLevel: t.Number(),
   money: t.Number()
 })
+
+const diceRollSchema = t.Object({
+  character_id: t.Optional(t.Number()),
+  roll_type: t.String(),
+  roll_value: t.Number(),
+  target_value: t.Optional(t.Number()),
+  success: t.Optional(t.Boolean())
+});
 
 const app = new Elysia()
   // Serve static files
@@ -101,11 +129,11 @@ const app = new Elysia()
             INSERT INTO characters (
                 playerName, characterName, occupation, age, sex, residence, birthplace,
                 characteristics, skills, hitPoints, sanity, luck, magicPoints, backstory, inventory,
-                creditLevel, money
+                money
             ) VALUES (
                 $playerName, $characterName, $occupation, $age, $sex, $residence, $birthplace,
                 $characteristics, $skills, $hitPoints, $sanity, $luck, $magicPoints, $backstory, $inventory,
-                $creditLevel, $money
+                $money
             )
         `);
 
@@ -125,7 +153,6 @@ const app = new Elysia()
       $magicPoints: JSON.stringify(character.magicPoints),
       $backstory: character.backstory,
       $inventory: JSON.stringify(character.inventory),
-      $creditLevel: character.creditLevel,
       $money: character.money
     });
 
@@ -191,7 +218,6 @@ const app = new Elysia()
                 magicPoints = $magicPoints,
                 backstory = $backstory,
                 inventory = $inventory,
-                creditLevel = $creditLevel,
                 money = $money
             WHERE id = $id
         `);
@@ -213,7 +239,6 @@ const app = new Elysia()
       $magicPoints: JSON.stringify(character.magicPoints),
       $backstory: character.backstory,
       $inventory: JSON.stringify(character.inventory),
-      $creditLevel: character.creditLevel,
       $money: character.money
     });
 
@@ -235,6 +260,39 @@ const app = new Elysia()
     }
 
     return { success: true };
+  })
+  // Add this endpoint after the existing endpoints
+  .post('/dice-rolls', ({ body }) => {
+    const roll = body as DiceRoll;
+    if (!roll.character_id) {
+      throw new Error('Character ID is required');
+    }
+
+    const query = db.prepare(`
+        INSERT INTO dice_rolls (
+            character_id, roll_type, roll_value, target_value, success
+        ) VALUES (
+            $character_id, $roll_type, $roll_value, $target_value, $success
+        )
+    `);
+
+    const result = query.run(
+      roll.character_id || null,
+      roll.roll_type!,
+      roll.roll_value!,
+      roll.target_value || null,
+      roll.success || null
+    );
+
+    return { id: result.lastInsertRowid };
+  }, {
+    body: diceRollSchema
+  })
+  // Add this endpoint to get roll history for a character
+  .get('/dice-rolls/:character_id', ({ params: { character_id } }) => {
+    const query = db.prepare('SELECT * FROM dice_rolls WHERE character_id = $character_id ORDER BY timestamp DESC');
+    const rolls = query.all({ $character_id: character_id });
+    return rolls;
   })
   .listen(3000);
 
